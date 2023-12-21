@@ -1,6 +1,6 @@
 ﻿namespace BethanyPieShop.InventoryManagement.Domain.OrderManagement;
 
-public class OrdemItem
+public class OrderItem
 {
     public int Id { get; set; }
     public int ProductId { get; set; }

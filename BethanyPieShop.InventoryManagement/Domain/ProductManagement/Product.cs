@@ -44,7 +44,7 @@ public partial class Product
     }
     public UnitType UnitType { get; set; }
     public int AmountInStock { get; private set; }
-    public bool IsBelowStockThreshold { get; private set; }
+    public bool IsBelowStockTreshold { get; private set; }
     public Price Price { get; set; }
 
     public Product(int id) : this(id, string.Empty)
@@ -93,7 +93,25 @@ public partial class Product
     {
         AmountInStock++;
     }
+    public void IncreaseStock(int amount)
+    {
+        int newStock = AmountInStock + amount;
 
+        if (newStock <= maxItemsInStock)
+        {
+            AmountInStock += amount;
+        }
+        else
+        {
+            AmountInStock = maxItemsInStock;//we only store the possible items, overstock isn't stored
+            Log($"{CreateSimpleProductRepresentation} stock overflow. {newStock - AmountInStock} item(s) ordere that couldn't be stored.");
+        }
+
+        if (AmountInStock > StockTreshold)
+        {
+            IsBelowStockTreshold = false;
+        }
+    }
     public void decreaseStock(int items, string reason)
     {
         if (items <= AmountInStock)
@@ -127,7 +145,7 @@ public partial class Product
         sb.Append($"{id} {name} \n{description}\n{Price.ToString()}\n{AmountInStock} item(s) in strock");
         sb.Append(extraDetails);
 
-        if (IsBelowStockThreshold)
+        if (IsBelowStockTreshold)
         {
             sb.Append("\n!!STOCK LOW!!");
         }

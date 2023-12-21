@@ -8,5 +8,5 @@ public class Price
     public override string ToString()
     {
         return $"{ItemPrice} {Currency}";
-    }
+    }   
 }
