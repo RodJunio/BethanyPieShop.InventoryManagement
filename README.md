@@ -34,3 +34,10 @@ Se você deseja contribuir com sugestões, melhorias ou adicionar novos recursos
 ---
 
 Este projeto foi desenvolvido como uma aplicação prática dos conceitos aprendidos no curso de Orientação a Objetos em C#. Sinta-se à vontade para explorar o código e adaptar conforme suas necessidades!
+
+---
+- ![image](https://github.com/RodJunio/BethanyPieShop.InventoryManagement/assets/90984407/908381be-bbd8-4c60-b18d-f97045704df1)
+- ![image](https://github.com/RodJunio/BethanyPieShop.InventoryManagement/assets/90984407/f54b4a3d-705f-4372-8fea-1865ec88c954)
+- ![image](https://github.com/RodJunio/BethanyPieShop.InventoryManagement/assets/90984407/dc74229e-2c77-4687-9ff6-e18e268b7944)
+- ![image](https://github.com/RodJunio/BethanyPieShop.InventoryManagement/assets/90984407/1d45b30b-b2d5-400d-a329-5070e81e16c5)
+
