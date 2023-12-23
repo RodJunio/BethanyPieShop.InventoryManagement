@@ -10,22 +10,22 @@ public partial class Product
         if (newStockTreshhold > 0)
             StockTreshold = newStockTreshhold;
     }
-    private string CreateSimpleProductRepresentation()
-    {
-        return $"Product {id} ({name})";
-    }
-
-    private void Log(string message)
-    {
-        //this could be written to a file
-        Console.WriteLine(message);
-    }
-
     public void UpdateLowStock()
     {
         if (AmountInStock < StockTreshold)//for now a fixed value
         {
             IsBelowStockTreshold = true;
         }
+    }
+
+    protected string CreateSimpleProductRepresentation()
+    {
+        return $"Product {id} ({name})";
+    }
+
+    protected void Log(string message)
+    {
+        //this could be written to a file
+        Console.WriteLine(message);
     }
 }

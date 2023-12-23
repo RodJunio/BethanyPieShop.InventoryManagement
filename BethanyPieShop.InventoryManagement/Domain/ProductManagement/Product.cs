@@ -1,55 +1,16 @@
 ﻿using BethanyPieShop.InventoryManagement.Domain.General;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace BethanyPieShop.InventoryManagement.Domain.ProductManagement;
 
-public partial class Product
+public abstract partial class Product:System.Object
 {
+    protected int maxItemsInStock = 0;
+    private string? description;
     private int id;
     private string name = string.Empty;
-    private string? description;
-
-    private int maxItemsInStock = 0;
-
-
-    public int Id
-    {
-        get { return id; }
-        set
-        {
-            id = value;
-        }
-    }
-
-    public string Name
-    {
-        get { return name; }
-        set
-        {
-            name = value.Length > 50 ? value[..50] : value;
-        }
-    }
-
-    public string? Description
-    {
-        get { return description; }
-        set
-        {
-            if (value == null)
-                description = string.Empty;
-            else
-                description = value.Length > 250 ? value[..250] : value;
-        }
-    }
-    public UnitType UnitType { get; set; }
-    public int AmountInStock { get; private set; }
-    public bool IsBelowStockTreshold { get; private set; }
-    public Price Price { get; set; }
-
     public Product(int id) : this(id, string.Empty)
     {
-
     }
 
     public Product(int id, string name)
@@ -71,29 +32,72 @@ public partial class Product
         UpdateLowStock();
     }
 
+    public int AmountInStock { get; protected set; }
 
-    public void UseProduct(int items)
+    public string? Description
     {
-        if (items <= AmountInStock)
+        get { return description; }
+        set
         {
-            //use the items
-            AmountInStock -= items;
-
-            UpdateLowStock();
-
-            Log($"Amount in stock update. Now {AmountInStock} items in stock");
-        }
-        else
-        {
-            Log($"Not enough items on stock for {CreateSimpleProductRepresentation()}. {AmountInStock} available but {items} requested");
+            if (value == null)
+                description = string.Empty;
+            else
+                description = value.Length > 250 ? value[..250] : value;
         }
     }
 
-    public void IncreaseStock()
+    public int Id
     {
-        AmountInStock++;
+        get { return id; }
+        set
+        {
+            id = value;
+        }
     }
-    public void IncreaseStock(int amount)
+
+    public bool IsBelowStockTreshold { get; protected set; }
+
+    public string Name
+    {
+        get { return name; }
+        set
+        {
+            name = value.Length > 50 ? value[..50] : value;
+        }
+    }
+    public Price Price { get; set; }
+    public UnitType UnitType { get; set; }
+    public virtual string DisplayDetailsFull()
+    {
+        return DisplayDetailsFull("");
+    }
+
+    public virtual string DisplayDetailsFull(string extraDetails)
+    {
+        StringBuilder sb = new StringBuilder();
+        //ToDo: add price hero too
+        sb.Append($"{id} {name} \n{description}\n{Price.ToString()}\n{AmountInStock} item(s) in strock");
+        sb.Append(extraDetails);
+
+        if (IsBelowStockTreshold)
+        {
+            sb.Append("\n!!STOCK LOW!!");
+        }
+        return sb.ToString();
+    }
+
+    public virtual string DisplayDetailsShort()
+    {
+        return $"{id}. {name} \n{AmountInStock} items in stock";
+    }
+
+    //public virtual void IncreaseStock()
+    //{
+    //    AmountInStock++;
+    //}
+    public abstract void IncreaseStock();
+
+    public virtual void IncreaseStock(int amount)
     {
         int newStock = AmountInStock + amount;
 
@@ -112,7 +116,24 @@ public partial class Product
             IsBelowStockTreshold = false;
         }
     }
-    public void decreaseStock(int items, string reason)
+
+    public virtual void UseProduct(int items)
+    {
+        if (items <= AmountInStock)
+        {
+            //use the items
+            AmountInStock -= items;
+
+            UpdateLowStock();
+
+            Log($"Amount in stock update. Now {AmountInStock} items in stock");
+        }
+        else
+        {
+            Log($"Not enough items on stock for {CreateSimpleProductRepresentation()}. {AmountInStock} available but {items} requested");
+        }
+    }
+    protected virtual void DecreaseStock(int items, string reason)
     {
         if (items <= AmountInStock)
         {
@@ -128,29 +149,4 @@ public partial class Product
 
         Log(reason);
     }
-
-    public string DisplayDetailsShort()
-    {
-        return $"{id}. {name} \n{AmountInStock} items in stock";
-    }
-
-    public string DisplayDetailsFull()
-    {
-        return DisplayDetailsFull("");
-    }
-    public string DisplayDetailsFull(string extraDetails)
-    {
-        StringBuilder sb = new StringBuilder();
-        //ToDo: add price hero too
-        sb.Append($"{id} {name} \n{description}\n{Price.ToString()}\n{AmountInStock} item(s) in strock");
-        sb.Append(extraDetails);
-
-        if (IsBelowStockTreshold)
-        {
-            sb.Append("\n!!STOCK LOW!!");
-        }
-        return sb.ToString();
-    }
-
-    
 }
