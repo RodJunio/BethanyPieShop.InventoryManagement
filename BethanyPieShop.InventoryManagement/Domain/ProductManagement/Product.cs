@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BethanyPieShop.InventoryManagement.Domain.ProductManagement;
 
-public abstract partial class Product:System.Object
+public abstract partial class Product : ICloneable
 {
     protected int maxItemsInStock = 0;
     private string? description;
@@ -67,6 +67,8 @@ public abstract partial class Product:System.Object
     }
     public Price Price { get; set; }
     public UnitType UnitType { get; set; }
+   
+
     public virtual string DisplayDetailsFull()
     {
         return DisplayDetailsFull("");
@@ -149,4 +151,9 @@ public abstract partial class Product:System.Object
 
         Log(reason);
     }
+    public abstract object Clone();
+    //public object Clone()
+    //{
+    //    throw new NotImplementedException();
+    //}
 }

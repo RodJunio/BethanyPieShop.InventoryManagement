@@ -1,4 +1,5 @@
-﻿using BethanyPieShop.InventoryManagement.Domain.General;
+﻿using BethanyPieShop.InventoryManagement.Domain.Contracts;
+using BethanyPieShop.InventoryManagement.Domain.General;
 using BethanyPieShop.InventoryManagement.Domain.OrderManagement;
 using BethanyPieShop.InventoryManagement.Domain.ProductManagement;
 
@@ -57,7 +58,7 @@ namespace BethanyPieShop.InventoryManagement
                     ShowSettingsMenu();
                     break;
                 case "4":
-                    //SaveAllData();
+                    SaveAllData();
                     break;
                 case "0":
                     break;
@@ -65,6 +66,23 @@ namespace BethanyPieShop.InventoryManagement
                     Console.WriteLine("Invalid selection. Please try again.");
                     break;
             }
+        }
+
+        private static void SaveAllData()
+        {
+            ProductRepository productRepository = new();
+
+            List<ISaveable> saveables = new List<ISaveable>();
+
+            foreach (var item in inventory)//now a list of Products
+            {
+                saveables.Add(item as ISaveable);
+            }
+
+            productRepository.SaveToFile(saveables);
+
+            Console.ReadLine();
+            ShowMainMenu();
         }
 
         private static void ShowAddNewOrder()
@@ -352,7 +370,7 @@ namespace BethanyPieShop.InventoryManagement
                         break;
 
                     case "3":
-                        //ShowCloneExistingProduct();
+                        ShowCloneExistingProduct();
                         break;
 
                     case "4":
@@ -367,6 +385,40 @@ namespace BethanyPieShop.InventoryManagement
             while (userSelection != "0");
             ShowMainMenu();
         }
+
+        private static void ShowCloneExistingProduct()
+        {
+            string? userSelection = string.Empty;
+            string? newId = string.Empty;
+
+            Console.Write("Enter the ID of product to clone: ");
+            string? selectedProductId = Console.ReadLine();
+
+            if (selectedProductId != null)
+            {
+                Product? selectedProduct = inventory.Where(p => p.Id == int.Parse(selectedProductId)).FirstOrDefault();
+
+                if (selectedProduct != null)
+                {
+                    Console.Write("Enter the new ID of the cloned product: ");
+
+                    newId = Console.ReadLine();
+
+                    Product? p = selectedProduct.Clone() as Product;
+
+                    if (p != null)
+                    {
+                        p.Id = int.Parse(newId);
+                        inventory.Add(p);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Non-existing product selected. Please try again.");
+            }
+        }
+
         private static void ShowOpenOrderOverview()
         {
             //check to handle fulfilled orders

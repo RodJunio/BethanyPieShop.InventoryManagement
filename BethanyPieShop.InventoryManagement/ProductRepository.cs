@@ -1,17 +1,19 @@
-﻿using BethanyPieShop.InventoryManagement.Domain.General;
+﻿using BethanyPieShop.InventoryManagement.Domain.Contracts;
+using BethanyPieShop.InventoryManagement.Domain.General;
 using BethanyPieShop.InventoryManagement.Domain.ProductManagement;
 using System.IO;
+using System.Text;
 
 namespace BethanyPieShop.InventoryManagement
 {
     public class ProductRepository
     {
         private string directory = @"E:\cursos\Projetos\Pluralsight\Object-oriented Programming in C# 10";
-        private string productFileName = "product.txt";
+        private string productsSaveFileName = "product.txt";
 
         private void CheckForExistingProductFile()
         {
-            string path = $"{directory}{productFileName}";
+            string path = $"{directory}{productsSaveFileName}";
 
             bool existingFileFound = File.Exists(path);
             if (!existingFileFound)
@@ -28,7 +30,7 @@ namespace BethanyPieShop.InventoryManagement
         {
             List<Product> products = new List<Product>();
 
-            string path = $"{directory}{productFileName}";
+            string path = $"{directory}{productsSaveFileName}";
             try
             {
                 CheckForExistingProductFile();
@@ -117,6 +119,23 @@ namespace BethanyPieShop.InventoryManagement
             }
 
             return products;
+        }
+        public void SaveToFile(List<ISaveable> saveables)
+        {
+            StringBuilder sb = new StringBuilder();
+            string path = $"{directory}{productsSaveFileName}";
+
+            foreach (var item in saveables)
+            {
+                sb.Append(item.ConvertToStringForSaving());
+                sb.Append(Environment.NewLine);
+            }
+
+            File.WriteAllText(path, sb.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Saved items successfully");
+            Console.ResetColor();
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using BethanyPieShop.InventoryManagement.Domain.General;
+﻿using BethanyPieShop.InventoryManagement.Domain.Contracts;
+using BethanyPieShop.InventoryManagement.Domain.General;
 using System.Text;
 
 namespace BethanyPieShop.InventoryManagement.Domain.ProductManagement
 {
-    public class BoxedProduct : Product
+    public class BoxedProduct : Product, ISaveable, ILoggable
     {
         private int amountPerBox;
 
@@ -19,6 +20,11 @@ namespace BethanyPieShop.InventoryManagement.Domain.ProductManagement
             {
                 amountPerBox = value;
             }
+        }
+
+        public string ConvertToStringForSaving()
+        {
+            return $"{Id};{Name};{Description};{maxItemsInStock};{Price.ItemPrice};{(int)Price.Currency};{(int)UnitType};1;{AmountPerbox};";
         }
 
         public string DisplayBoxedProductDetails()
@@ -91,6 +97,17 @@ namespace BethanyPieShop.InventoryManagement.Domain.ProductManagement
             }
             base.UseProduct(items);
         }
+
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        public override object Clone()
+        {
+            return new BoxedProduct(0, this.Name, this.Description, new Price() { ItemPrice = this.Price.ItemPrice, Currency = this.Price.Currency }, this.maxItemsInStock, this.AmountPerbox);
+        }
+
         //public void UseBoxedProduct(int items)
         //{
         //    int smallestMultiple = 0;
